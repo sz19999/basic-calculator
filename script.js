@@ -3,6 +3,7 @@ let calc = {
     "operand1": "",
     "operand2": "",
     "operator": "",
+    "result": "",
 };
 
 // create calculator elements refernces
@@ -40,6 +41,24 @@ clrBtn.addEventListener("click", clearDisplay);
 // setup delete button (DEL)
 delBtn.addEventListener("click", deleteDigit);
 
+// setup binary operators buttons
+const binOpButtons = document.querySelectorAll(".operator");
+binOpButtons.forEach(button => {
+    button.addEventListener("click", getOperand);
+});
+
+// setup equals operator
+equalBtn.addEventListener("click", () => {
+    // the equals button was pressed with two operands ready
+    if (calc.operand2 !== "") {
+        evalExpression();
+    }
+    // if only operand1 available
+    else if (calc.operand1 !== "") {
+        updateDisplay();
+    }
+});
+
 // appends appropriate digit to operand
 function appendDigit(e) {
     const eventSrc = e.target.id;
@@ -49,7 +68,7 @@ function appendDigit(e) {
         if (calc.operator === "" && calc.operand1 !== "" && calc.operand1 === "0") {
             calc.operand1 = "";
         }
-        else if (calc.operator === "" && calc.operand2 !== "" && calc.operand2 === "0") {
+        else if (calc.operator !== "" && calc.operand2 !== "" && calc.operand2 === "0") {
             calc.operand2 = "";
         }
     }
@@ -100,9 +119,14 @@ function appendDigit(e) {
 
 // updates the number on the display
 function updateDisplay() {
-    // if there's no operand we're modifying operand1
-    // otherwise, it's operand2
-    dispTxt.textContent = calc.operator === "" ? calc.operand1 : calc.operand2;
+    // if there's no result, means we're modfying operands
+    // otherwise, we got a new result that we need to output on display
+    if (calc.result === "") {
+        dispTxt.textContent = calc.operator === "" ? calc.operand1 : calc.operand2;
+    }
+    else {
+        dispTxt.textContent = calc.result;
+    }
 }
 
 // resets display and any pending calculations
@@ -121,4 +145,68 @@ function deleteDigit() {
     }
 
     updateDisplay();
+}
+
+function getOperand(e) {
+    const op = e.target.id;
+
+    // return if there's no left operand (operand1)
+    if (calc.operand1 === "") {
+        return;
+    } 
+    // if there're two operands available, evaluate expression
+    else if (calc.operand1 !== "" && calc.operand2 !== "") {
+        evalExpression();
+    }
+
+    // get new operator
+    switch (op) {
+        case "btn-add":
+            calc.operator = "+";
+            break;
+        case "btn-sub":
+            calc.operator = "-";
+            break;
+        case "btn-mod":
+            calc.operator = "%";
+            break;
+        case "btn-divide":
+            calc.operator = "÷";
+            break;
+        case "btn-multiply":
+            calc.operator = "x";
+            break;
+        case "btn-power":
+            calc.operator = "^";
+            break;
+    }
+}
+
+function evalExpression() {
+    switch (calc.operator) {
+        case "+":
+            calc.result = `${+calc.operand1 + +calc.operand2}`;
+            break;
+        case "-":
+            calc.result = `${+calc.operand1 - +calc.operand2}`;
+            break;
+        case "x":
+            calc.result = `${+calc.operand1 * +calc.operand2}`;
+            break;
+        case "^":
+            calc.result = `${(+calc.operand1) ** (+calc.operand2)}`;
+            break;
+        case "÷":
+            calc.result = `${+calc.operand1 / +calc.operand2}`;
+            break;
+        case "%":
+            calc.result = `${+calc.operand1 % +calc.operand2}`;
+            break;
+    }
+
+    updateDisplay();
+
+    // push the result into operand1 for future processing
+    calc.operand1 = calc.result;
+    calc.operand2 = calc.result = "";   // then reset operand2 and operator
 }
