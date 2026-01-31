@@ -6,6 +6,7 @@ let calc = {
     "result": "",
     "isOperand1Float": false,
     "isOperand2Float": false,
+    "divByZero": false,
 };
 
 // create calculator elements refernces
@@ -209,7 +210,11 @@ function evalExpression() {
             calc.result = `${(+calc.operand1) ** (+calc.operand2)}`;
             break;
         case "÷":
-            calc.result = `${+calc.operand1 / +calc.operand2}`;
+            if (calc.operand2 !== "0")
+                calc.result = `${+calc.operand1 / +calc.operand2}`;
+            else
+                calc.divByZero = true;
+                calc.result = "Can't divide by 0!";
             break;
         case "%":
             calc.result = `${+calc.operand1 % +calc.operand2}`;
@@ -219,7 +224,7 @@ function evalExpression() {
     updateDisplay();
 
     // push the result into operand1 for future processing
-    calc.operand1 = calc.result;
+    calc.operand1 = calc.divByZero ? "" : calc.result;
     calc.operand2 = calc.result = calc.operator ="";   // then reset operand2, operator & result
 }
 
