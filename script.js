@@ -7,6 +7,7 @@ let calc = {
     "isOperand1Float": false,
     "isOperand2Float": false,
     "divByZero": false,
+    "isResDisplayed": false,
 };
 
 // create calculator elements refernces
@@ -52,6 +53,8 @@ binOpButtons.forEach(button => {
 
 // setup equals operator
 equalBtn.addEventListener("click", () => {
+    calc.isResDisplayed = true;
+
     // the equals button was pressed with two operands ready
     if (calc.operand2 !== "") {
         evalExpression();
@@ -68,6 +71,12 @@ dotBtn.addEventListener("click", appendDot);
 // appends appropriate digit to operand
 function appendDigit(e) {
     const eventSrc = e.target.id;
+
+    // if a result was displayed, start a new calculation
+    if (calc.isResDisplayed && calc.operator === "") {
+        calc.isResDisplayed = false;
+        calc.operand1 = "";
+    }
 
     // delete leading zero
     if (eventSrc !== "btn-0") {
@@ -212,9 +221,10 @@ function evalExpression() {
         case "÷":
             if (calc.operand2 !== "0")
                 calc.result = `${+calc.operand1 / +calc.operand2}`;
-            else
+            else {
                 calc.divByZero = true;
                 calc.result = "Can't divide by 0!";
+            }
             break;
         case "%":
             calc.result = `${+calc.operand1 % +calc.operand2}`;
