@@ -47,7 +47,7 @@ delBtn.addEventListener("click", deleteDigit);
 // setup binary operators buttons
 const binOpButtons = document.querySelectorAll(".operator");
 binOpButtons.forEach(button => {
-    button.addEventListener("click", getOperand);
+    button.addEventListener("click", getOperator);
 });
 
 // setup equals operator
@@ -160,7 +160,7 @@ function deleteDigit() {
     updateDisplay();
 }
 
-function getOperand(e) {
+function getOperator(e) {
     const op = e.target.id;
 
     // return if there's no left operand (operand1)
