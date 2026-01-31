@@ -4,6 +4,8 @@ let calc = {
     "operand2": "",
     "operator": "",
     "result": "",
+    "isOperand1Float": false,
+    "isOperand2Float": false,
 };
 
 // create calculator elements refernces
@@ -58,6 +60,9 @@ equalBtn.addEventListener("click", () => {
         updateDisplay();
     }
 });
+
+// setup floating point
+dotBtn.addEventListener("click", appendDot);
 
 // appends appropriate digit to operand
 function appendDigit(e) {
@@ -133,14 +138,21 @@ function updateDisplay() {
 function clearDisplay() {
     dispTxt.textContent = "";
     calc.operand1 = calc.operand2 = calc.operator = "";
+    calc.isOperand1Float = calc.isOperand2Float = false;
 }
 
 // deletes last digit of an operand
 function deleteDigit() {
     if (calc.operator === "" && calc.operand1 !== "") {
+        if (calc.operand1.slice(-1) === ".") {
+            calc.isOperand1Float = false;
+        }
         calc.operand1 = calc.operand1.slice(0, -1);
     }
     else if (calc.operator !== "" && calc.operand2 !== "") {
+        if (calc.operand2.slice(-1) === ".") {
+            calc.isOperand2Float = false;
+        }
         calc.operand2 = calc.operand2.slice(0, -1);
     }
 
@@ -209,4 +221,19 @@ function evalExpression() {
     // push the result into operand1 for future processing
     calc.operand1 = calc.result;
     calc.operand2 = calc.result = "";   // then reset operand2 and operator
+}
+
+function appendDot() {
+    // operand1 isn't a float
+    if (calc.operator === "" && !calc.isOperand1Float) {
+        calc.operand1 += ".";
+        calc.isOperand1Float = true;
+    }
+    // operand2 isn't a float
+    else if (calc.operator !== "" && !calc.isOperand2Float) {
+        calc.operand2 += ".";
+        calc.isOperand2Float = true;
+    }
+
+    updateDisplay();
 }
