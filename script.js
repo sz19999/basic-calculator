@@ -220,7 +220,7 @@ function evalExpression() {
 
     // push the result into operand1 for future processing
     calc.operand1 = calc.result;
-    calc.operand2 = calc.result = "";   // then reset operand2 and operator
+    calc.operand2 = calc.result = calc.operator ="";   // then reset operand2, operator & result
 }
 
 function appendDot() {
