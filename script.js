@@ -34,6 +34,13 @@ digitButtons.forEach(button => {
     button.addEventListener("click", appendDigit);
 });
 
+// setup clear (AC) button click event
+clrBtn.addEventListener("click", clearDisplay);
+
+// setup delete button (DEL)
+delBtn.addEventListener("click", deleteDigit);
+
+// appends appropriate digit to operand
 function appendDigit(e) {
     const eventSrc = e.target.id;
 
@@ -96,4 +103,22 @@ function updateDisplay() {
     // if there's no operand we're modifying operand1
     // otherwise, it's operand2
     dispTxt.textContent = calc.operator === "" ? calc.operand1 : calc.operand2;
+}
+
+// resets display and any pending calculations
+function clearDisplay() {
+    dispTxt.textContent = "";
+    calc.operand1 = calc.operand2 = calc.operator = "";
+}
+
+// deletes last digit of an operand
+function deleteDigit() {
+    if (calc.operator === "" && calc.operand1 !== "") {
+        calc.operand1 = calc.operand1.slice(0, -1);
+    }
+    else if (calc.operator !== "" && calc.operand2 !== "") {
+        calc.operand2 = calc.operand2.slice(0, -1);
+    }
+
+    updateDisplay();
 }
